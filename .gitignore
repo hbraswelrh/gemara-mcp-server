@@ -31,3 +31,7 @@ go.work.sum
 
 # env file
 .env
+
+# Built binaries
+gemara-mcp-server
+gemara-mcp-server.exe
