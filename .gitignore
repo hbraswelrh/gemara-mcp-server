@@ -35,3 +35,8 @@ go.work.sum
 # Built binaries
 gemara-mcp-server
 gemara-mcp-server.exe
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo

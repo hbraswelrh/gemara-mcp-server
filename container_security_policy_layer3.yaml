@@ -1,0 +1,489 @@
+# Gemara Layer 3 Policy: Container Security
+# This policy conforms to the Gemara Layer 3 schema structure
+# Generated in accordance with OpenSSF Gemara Project specifications
+
+---
+# Policy Metadata
+policy:
+  identifier: "POL-CONTAINER-SEC-001"
+  version: "1.0.0"
+  title: "Container Security Policy"
+  scope: "Container Security"
+  effective_date: "2024-01-15"
+  last_reviewed: "2024-01-15"
+  next_review: "2025-01-15"
+  status: "active"
+  owner: "Security Engineering Team"
+  approver: "Chief Information Security Officer"
+
+# Policy Statement and Objectives
+policy_statement: |
+  This policy establishes risk-informed governance rules for the secure development,
+  deployment, and operation of containerized applications and infrastructure. The policy
+  ensures that container security practices align with organizational risk appetite and
+  industry best practices, while enabling secure and efficient container operations.
+
+objectives:
+  - Ensure all container images are scanned for vulnerabilities before deployment
+  - Enforce least privilege access controls for containerized workloads
+  - Implement network segmentation and isolation for container environments
+  - Maintain comprehensive logging and monitoring of container activities
+  - Establish automated security controls and enforcement mechanisms
+  - Ensure compliance with applicable regulatory and industry standards
+
+# Scope and Applicability
+scope:
+  domain: "Container Security"
+  applies_to:
+    - Container images and registries
+    - Container orchestration platforms (Kubernetes, Docker Swarm, etc.)
+    - Container runtime environments
+    - CI/CD pipelines that build and deploy containers
+    - Containerized applications and microservices
+    - Container infrastructure and supporting systems
+  
+  exclusions:
+    - Legacy systems not using containerization
+    - Development environments with explicit risk acceptance (documented)
+  
+  geographic_scope: "All organizational locations and cloud environments"
+
+# Roles and Responsibilities
+roles_and_responsibilities:
+  security_engineering_team:
+    - Develop and maintain container security standards and controls
+    - Implement and operate container security scanning tools
+    - Review and approve container base images
+    - Investigate and respond to container security incidents
+  
+  platform_engineering_team:
+    - Configure and maintain container orchestration platform security
+    - Implement network policies and segmentation
+    - Manage container registry security
+    - Enforce resource limits and quotas
+  
+  development_teams:
+    - Follow secure container development practices
+    - Use approved base images and registries
+    - Remediate vulnerabilities identified in container scans
+    - Implement least privilege configurations
+  
+  devops_team:
+    - Integrate security scanning into CI/CD pipelines
+    - Implement automated security controls
+    - Monitor container deployments for policy compliance
+    - Maintain container infrastructure security
+  
+  security_governance:
+    - Review and approve this policy
+    - Conduct periodic policy compliance audits
+    - Review risk acceptance decisions
+    - Update policy based on evolving threats and requirements
+
+# Risk-Informed Requirements and Controls
+
+## 1. Container Image Security
+requirements:
+  - identifier: "REQ-IMG-001"
+    title: "Image Source Validation"
+    description: |
+      All container images must be sourced from approved and trusted registries.
+      Public images must be verified and scanned before use.
+    risk_level: "high"
+    controls:
+      - Only use images from approved container registries
+      - Maintain an approved base image catalog
+      - Prohibit use of images from untrusted sources
+      - Require explicit approval for new image sources
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "PR.AC-1: Identities and credentials are issued, managed, verified, revoked, and audited for authorized devices, users and processes"
+      - source: "ISO 27001"
+        control: "A.9.4.2: Secure log-on procedures"
+        control: "A.12.6.1: Management of technical vulnerabilities"
+      - source: "CIS Docker Benchmark"
+        control: "4.1: Ensure a user for the container has been created"
+        control: "4.5: Ensure Content Trust for Docker is Enabled"
+  
+  - identifier: "REQ-IMG-002"
+    title: "Vulnerability Scanning"
+    description: |
+      All container images must be scanned for known vulnerabilities before deployment.
+      Critical and high-severity vulnerabilities must be remediated before production deployment.
+    risk_level: "high"
+    controls:
+      - Implement automated vulnerability scanning in CI/CD pipelines
+      - Scan all images before deployment to any environment
+      - Maintain vulnerability scanning results and remediation tracking
+      - Block deployment of images with critical vulnerabilities (unless risk-accepted)
+      - Require regular re-scanning of images in use
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "DE.CM-8: Vulnerability scans are performed"
+        control: "RS.MI-1: Incidents are contained"
+      - source: "ISO 27001"
+        control: "A.12.6.1: Management of technical vulnerabilities"
+      - source: "PCI DSS"
+        control: "Requirement 6.2: Ensure that all system components and software are protected from known vulnerabilities"
+  
+  - identifier: "REQ-IMG-003"
+    title: "Minimal Base Images"
+    description: |
+      Use minimal base images to reduce attack surface. Avoid full operating system
+      images unless necessary for application requirements.
+    risk_level: "medium"
+    controls:
+      - Prefer minimal base images (Alpine, distroless, scratch)
+      - Document justification for full OS images
+      - Regularly review and update base images
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "PR.DS-1: Data-at-rest is protected"
+        control: "PR.IP-1: A baseline configuration of information technology/industrial control systems is created and maintained"
+      - source: "CIS Docker Benchmark"
+        control: "4.1: Ensure a user for the container has been created"
+
+## 2. Access Control and Privileges
+requirements:
+  - identifier: "REQ-ACC-001"
+    title: "Least Privilege Principle"
+    description: |
+      Containers must run with the minimum necessary privileges. Avoid running
+      containers as root user unless explicitly required and risk-accepted.
+    risk_level: "high"
+    controls:
+      - Run containers as non-root users by default
+      - Use security contexts to restrict capabilities
+      - Disable unnecessary Linux capabilities
+      - Implement read-only root filesystems where possible
+      - Require explicit justification and approval for privileged containers
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "PR.AC-4: Access permissions and authorizations are managed, incorporating the principles of least privilege and separation of duties"
+        control: "PR.AC-5: Network integrity is protected (e.g., network segregation, network segmentation)"
+      - source: "ISO 27001"
+        control: "A.9.2.1: User registration and de-registration"
+        control: "A.9.2.3: Management of privileged access rights"
+      - source: "CIS Docker Benchmark"
+        control: "4.1: Ensure a user for the container has been created"
+        control: "4.6: Ensure HEALTHCHECK instructions have been added to container images"
+  
+  - identifier: "REQ-ACC-002"
+    title: "Service Account Management"
+    description: |
+      Use dedicated service accounts with minimal required permissions for container
+      workloads. Avoid using default service accounts.
+    risk_level: "medium"
+    controls:
+      - Create dedicated service accounts for each application
+      - Grant only necessary permissions to service accounts
+      - Regularly review and audit service account permissions
+      - Rotate service account credentials regularly
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "PR.AC-1: Identities and credentials are issued, managed, verified, revoked, and audited"
+      - source: "ISO 27001"
+        control: "A.9.2.1: User registration and de-registration"
+
+## 3. Network Security
+requirements:
+  - identifier: "REQ-NET-001"
+    title: "Network Segmentation"
+    description: |
+      Implement network policies to isolate container workloads and limit
+      communication to only necessary services.
+    risk_level: "high"
+    controls:
+      - Implement network policies for all container namespaces
+      - Use network segmentation to isolate different application tiers
+      - Restrict ingress and egress traffic to required ports and protocols
+      - Implement service mesh for advanced traffic management and security
+      - Regularly audit network policies for effectiveness
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "PR.AC-5: Network integrity is protected (e.g., network segregation, network segmentation)"
+        control: "DE.CM-1: The network is monitored to detect potential cybersecurity events"
+      - source: "ISO 27001"
+        control: "A.13.1.1: Network controls"
+        control: "A.13.1.3: Segregation in networks"
+      - source: "PCI DSS"
+        control: "Requirement 1: Install and maintain a firewall configuration to protect cardholder data"
+  
+  - identifier: "REQ-NET-002"
+    title: "Encryption in Transit"
+    description: |
+      All inter-container and external communications must use encrypted channels
+      (TLS/SSL) for sensitive data.
+    risk_level: "high"
+    controls:
+      - Enforce TLS for all inter-service communication
+      - Use mutual TLS (mTLS) for service-to-service authentication
+      - Regularly rotate TLS certificates
+      - Monitor for unencrypted traffic
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "PR.DS-2: Data-in-transit is protected"
+      - source: "ISO 27001"
+        control: "A.10.1.1: Cryptographic controls"
+      - source: "PCI DSS"
+        control: "Requirement 4: Encrypt transmission of cardholder data across open, public networks"
+
+## 4. Runtime Security
+requirements:
+  - identifier: "REQ-RUN-001"
+    title: "Resource Limits"
+    description: |
+      Define and enforce CPU and memory limits for all containers to prevent
+      resource exhaustion attacks and ensure fair resource allocation.
+    risk_level: "medium"
+    controls:
+      - Set CPU and memory requests and limits for all containers
+      - Implement resource quotas at namespace level
+      - Monitor resource usage and alert on anomalies
+      - Prevent resource exhaustion attacks
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "PR.IP-1: A baseline configuration of information technology/industrial control systems is created and maintained"
+      - source: "CIS Kubernetes Benchmark"
+        control: "5.7.3: Ensure that the --bind-address argument is set to 127.0.0.1"
+  
+  - identifier: "REQ-RUN-002"
+    title: "Read-Only Filesystems"
+    description: |
+      Configure containers to use read-only root filesystems where possible to
+      prevent unauthorized modifications.
+    risk_level: "medium"
+    controls:
+      - Use read-only root filesystems for stateless containers
+      - Mount writable volumes only where necessary
+      - Restrict write access to specific directories
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "PR.DS-1: Data-at-rest is protected"
+      - source: "CIS Docker Benchmark"
+        control: "5.12: Ensure the container's root filesystem is mounted as read only"
+
+## 5. Logging and Monitoring
+requirements:
+  - identifier: "REQ-LOG-001"
+    title: "Centralized Logging"
+    description: |
+      Aggregate logs from all containers to a centralized logging system for
+      analysis, correlation, and compliance.
+    risk_level: "high"
+    controls:
+      - Implement centralized logging for all container workloads
+      - Retain logs for minimum 90 days (or as required by regulation)
+      - Ensure log integrity and prevent tampering
+      - Implement log analysis and alerting
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "DE.CM-1: The network is monitored to detect potential cybersecurity events"
+        control: "DE.AE-1: A baseline of network operations and expected data flows for users and systems is established and managed"
+      - source: "ISO 27001"
+        control: "A.12.4.1: Event logging"
+        control: "A.12.4.2: Protection of log information"
+      - source: "PCI DSS"
+        control: "Requirement 10: Track and monitor all access to network resources and cardholder data"
+  
+  - identifier: "REQ-LOG-002"
+    title: "Security Monitoring and Alerting"
+    description: |
+      Implement continuous security monitoring and alerting for container
+      environments to detect and respond to security incidents.
+    risk_level: "high"
+    controls:
+      - Monitor container runtime behavior for anomalies
+      - Alert on suspicious activities and policy violations
+      - Implement automated response to security events
+      - Maintain security event correlation and analysis
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "DE.CM-1: The network is monitored to detect potential cybersecurity events"
+        control: "DE.AE-3: Event data are collected and correlated from multiple sources and tools"
+      - source: "ISO 27001"
+        control: "A.12.4.1: Event logging"
+
+## 6. Secrets Management
+requirements:
+  - identifier: "REQ-SEC-001"
+    title: "Secrets Storage and Access"
+    description: |
+      Store and manage container secrets (API keys, passwords, certificates) using
+      secure secrets management systems. Never hardcode secrets in container images.
+    risk_level: "high"
+    controls:
+      - Use dedicated secrets management systems (e.g., HashiCorp Vault, Kubernetes Secrets)
+      - Never commit secrets to version control or container images
+      - Rotate secrets regularly
+      - Encrypt secrets at rest and in transit
+      - Implement least privilege access to secrets
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "PR.DS-1: Data-at-rest is protected"
+        control: "PR.DS-2: Data-in-transit is protected"
+        control: "PR.AC-1: Identities and credentials are issued, managed, verified, revoked, and audited"
+      - source: "ISO 27001"
+        control: "A.10.1.1: Cryptographic controls"
+        control: "A.9.2.1: User registration and de-registration"
+      - source: "PCI DSS"
+        control: "Requirement 3: Protect stored cardholder data"
+
+## 7. Compliance and Audit
+requirements:
+  - identifier: "REQ-AUD-001"
+    title: "Policy Compliance Monitoring"
+    description: |
+      Continuously monitor container deployments for compliance with this policy
+      and related security controls.
+    risk_level: "high"
+    controls:
+      - Implement automated policy compliance checking
+      - Generate compliance reports regularly
+      - Track and remediate policy violations
+      - Maintain audit trail of compliance activities
+    layer1_mappings:
+      - source: "NIST Cybersecurity Framework"
+        control: "DE.CM-8: Vulnerability scans are performed"
+      - source: "ISO 27001"
+        control: "A.18.2.1: Independent review of information security"
+      - source: "PCI DSS"
+        control: "Requirement 11: Regularly test security systems and processes"
+
+# Compliance and Enforcement Mechanisms
+compliance:
+  automated_enforcement:
+    - CI/CD pipeline gates that block non-compliant deployments
+    - Admission controllers that enforce security policies
+    - Automated vulnerability scanning and blocking
+    - Network policy enforcement
+    - Resource quota enforcement
+  
+  manual_review:
+    - Security team review of privileged container requests
+    - Risk acceptance process for policy exceptions
+    - Regular compliance audits and assessments
+  
+  reporting:
+    - Monthly compliance reports to security governance
+    - Quarterly risk assessment reviews
+    - Annual policy effectiveness review
+
+enforcement:
+  violations:
+    - Non-compliant containers will be blocked from deployment
+    - Existing non-compliant containers will be flagged for remediation
+    - Repeated violations may result in access restrictions
+  
+  exceptions:
+    - Policy exceptions require documented risk acceptance
+    - Exceptions must be approved by security governance
+    - Exceptions are time-limited and subject to review
+    - Exceptions must be documented with justification
+
+# Review and Update Procedures
+review_procedures:
+  frequency: "Annual review, or as needed based on:"
+    - Changes in threat landscape
+    - New regulatory requirements
+    - Significant security incidents
+    - Changes in organizational risk appetite
+    - Updates to Layer 1 guidance sources
+  
+  review_process:
+    - Security Engineering Team conducts policy review
+    - Gather feedback from stakeholders
+    - Assess policy effectiveness and compliance
+    - Update policy based on findings
+    - Obtain approval from security governance
+    - Communicate updates to all stakeholders
+  
+  version_control:
+    - All policy versions are maintained in version control
+    - Changes are tracked with change logs
+    - Previous versions remain accessible for audit purposes
+
+# References to Layer 1 Guidance Sources
+layer1_guidance_mappings:
+  nist_cybersecurity_framework:
+    url: "https://www.nist.gov/cyberframework"
+    applicable_controls:
+      - "PR.AC-1: Identities and credentials management"
+      - "PR.AC-4: Access permissions and authorizations"
+      - "PR.AC-5: Network integrity protection"
+      - "PR.DS-1: Data-at-rest protection"
+      - "PR.DS-2: Data-in-transit protection"
+      - "DE.CM-1: Network monitoring"
+      - "DE.CM-8: Vulnerability scanning"
+      - "DE.AE-1: Baseline establishment"
+      - "DE.AE-3: Event data correlation"
+      - "RS.MI-1: Incident containment"
+  
+  iso_27001:
+    url: "https://www.iso.org/standard/54534.html"
+    applicable_controls:
+      - "A.9.2.1: User registration and de-registration"
+      - "A.9.2.3: Management of privileged access rights"
+      - "A.9.4.2: Secure log-on procedures"
+      - "A.10.1.1: Cryptographic controls"
+      - "A.12.4.1: Event logging"
+      - "A.12.4.2: Protection of log information"
+      - "A.12.6.1: Management of technical vulnerabilities"
+      - "A.13.1.1: Network controls"
+      - "A.13.1.3: Segregation in networks"
+      - "A.18.2.1: Independent review of information security"
+  
+  pci_dss:
+    url: "https://www.pcisecuritystandards.org/"
+    applicable_controls:
+      - "Requirement 1: Firewall configuration"
+      - "Requirement 3: Protect stored cardholder data"
+      - "Requirement 4: Encrypt transmission of cardholder data"
+      - "Requirement 6.2: Protect from known vulnerabilities"
+      - "Requirement 10: Track and monitor access"
+      - "Requirement 11: Regularly test security systems"
+  
+  cis_docker_benchmark:
+    url: "https://www.cisecurity.org/benchmark/docker"
+    applicable_controls:
+      - "4.1: Ensure a user for the container has been created"
+      - "4.5: Ensure Content Trust for Docker is Enabled"
+      - "4.6: Ensure HEALTHCHECK instructions have been added"
+      - "5.12: Ensure the container's root filesystem is mounted as read only"
+  
+  cis_kubernetes_benchmark:
+    url: "https://www.cisecurity.org/benchmark/kubernetes"
+    applicable_controls:
+      - "5.7.3: Ensure that the --bind-address argument is set to 127.0.0.1"
+
+# Risk Appetite Considerations
+risk_appetite:
+  default_risk_tolerance: "Moderate"
+  risk_acceptance_criteria:
+    - Critical vulnerabilities: "Not acceptable in production without documented risk acceptance"
+    - High vulnerabilities: "Must be remediated within 30 days or risk-accepted"
+    - Medium vulnerabilities: "Must be remediated within 90 days"
+    - Low vulnerabilities: "Tracked and remediated as resources allow"
+  
+  risk_acceptance_process:
+    - Document business justification
+    - Assess potential impact
+    - Define mitigation measures
+    - Obtain approval from security governance
+    - Set review date for risk acceptance
+    - Document in risk register
+
+# Appendices
+appendices:
+  approved_base_images:
+    description: "List of approved base images maintained separately"
+    location: "Internal documentation system"
+  
+  container_registry_policy:
+    description: "Detailed policy for container registry usage"
+    reference: "POL-CONTAINER-REG-001"
+  
+  incident_response_procedures:
+    description: "Procedures for responding to container security incidents"
+    reference: "PROC-SEC-INCIDENT-001"
+

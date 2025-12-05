@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "gemara-mcp-server": {
-      "command": "/absolute/path/to/gemara-mcp-server",
+      "command": "/home/hbraswel/GIT/PSCE/Baklava/developer/gem-mcp/gemara-mcp-server/gemara-mcp-server",
       "args": [],
       "env": {}
     }
