@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/complytime/gemara-mcp-server/tools/prompts"
 	"github.com/mark3labs/mcp-go/mcp"
 )
 
@@ -66,9 +67,9 @@ func TestHandleGemaraContextResource(t *testing.T) {
 		t.Error("Expected at least one content item in the resource result")
 	}
 
-	// Check that gemaraContext is embedded
-	if gemaraContext == "" {
-		t.Error("gemaraContext should not be empty")
+	// Check that GemaraContext is embedded
+	if prompts.GemaraContext == "" {
+		t.Error("GemaraContext should not be empty")
 	}
 
 	// Verify first content item contains the context

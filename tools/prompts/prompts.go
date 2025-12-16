@@ -15,3 +15,6 @@ var CreateLayer3Prompt string
 
 //go:embed quick-start.md
 var QuickStartPrompt string
+
+//go:embed gemara-context.md
+var GemaraContext string

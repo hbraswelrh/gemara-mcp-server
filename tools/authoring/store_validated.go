@@ -1,4 +1,4 @@
-package tools
+package authoring
 
 import (
 	"fmt"
@@ -17,7 +17,7 @@ func (g *GemaraAuthoringTools) StoreValidatedYAML(layer int, yamlContent string)
 	}
 
 	// Validate with CUE first
-	validationResult := g.PerformCUEValidation(yamlContent, layer)
+	validationResult := g.infoTools.PerformCUEValidation(yamlContent, layer)
 	if !validationResult.Valid {
 		errorMsg := "CUE validation failed:\n"
 		if validationResult.Error != "" {
@@ -92,7 +92,7 @@ func (g *GemaraAuthoringTools) LoadAndValidateArtifact(layer int, artifactID str
 	}
 
 	// Validate
-	validationResult := g.PerformCUEValidation(yamlContent, layer)
+	validationResult := g.infoTools.PerformCUEValidation(yamlContent, layer)
 	if !validationResult.Valid {
 		return fmt.Errorf("artifact %s failed validation: %v", artifactID, validationResult.Errors)
 	}

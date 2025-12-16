@@ -1,4 +1,4 @@
-package tools
+package authoring
 
 import (
 	"github.com/ossf/gemara/layer1"

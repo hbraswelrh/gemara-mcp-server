@@ -1,4 +1,4 @@
-package tools
+package authoring
 
 import (
 	"encoding/json"
@@ -28,7 +28,7 @@ func marshalOutput(data interface{}, outputFormat string) (string, error) {
 		}
 		return string(jsonBytes), nil
 	}
-	
+
 	// Default to YAML
 	yamlBytes, err := yaml.Marshal(data)
 	if err != nil {

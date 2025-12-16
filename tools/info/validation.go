@@ -1,4 +1,4 @@
-package tools
+package info
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 )
 
 // handleValidateGemaraYAML validates YAML content against a layer schema using CUE
-func (g *GemaraAuthoringTools) handleValidateGemaraYAML(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+func (g *GemaraInfoTools) handleValidateGemaraYAML(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	yamlContent := request.GetString("yaml_content", "")
 	layer := request.GetInt("layer", 0)
 	outputFormat := request.GetString("output_format", "text")
@@ -31,12 +31,13 @@ func (g *GemaraAuthoringTools) handleValidateGemaraYAML(ctx context.Context, req
 	report := ValidationReport{
 		ValidationResult: validationResult,
 		Layer:            layer,
+		SchemaVersion:    g.schemaVersion,
 		Schema: struct {
 			URL        string `json:"url"`
 			Repository string `json:"repository"`
 		}{
-			URL:        fmt.Sprintf("https://github.com/ossf/gemara/blob/main/schemas/layer-%d.cue", layer),
-			Repository: "https://github.com/ossf/gemara/tree/main/schemas",
+			URL:        fmt.Sprintf("https://github.com/ossf/gemara/blob/%s/schemas/layer-%d.cue", g.schemaVersion, layer),
+			Repository: fmt.Sprintf("https://github.com/ossf/gemara/tree/%s/schemas", g.schemaVersion),
 		},
 	}
 
@@ -55,7 +56,7 @@ func (g *GemaraAuthoringTools) handleValidateGemaraYAML(ctx context.Context, req
 
 // PerformCUEValidation performs CUE schema validation on YAML content
 // This is exported so it can be used by validation scripts
-func (g *GemaraAuthoringTools) PerformCUEValidation(yamlContent string, layer int) ValidationResult {
+func (g *GemaraInfoTools) PerformCUEValidation(yamlContent string, layer int) ValidationResult {
 	result := ValidationResult{
 		Valid:  true,
 		Errors: []string{},
@@ -201,7 +202,8 @@ type ValidationResult struct {
 
 type ValidationReport struct {
 	ValidationResult `json:,inline`
-	Layer            int `json:"layer"`
+	Layer            int    `json:"layer"`
+	SchemaVersion    string `json:"schema_version"`
 	Schema           struct {
 		URL        string `json:"url"`
 		Repository string `json:"repository"`
@@ -232,8 +234,9 @@ func (v ValidationReport) ToText(yamlContent string) string {
 	}
 
 	result += fmt.Sprintf("## Schema Information\n\n")
-	result += fmt.Sprintf("- **Schema URL**: https://github.com/ossf/gemara/blob/main/schemas/layer-%d.cue\n", v.Layer)
-	result += fmt.Sprintf("- **Schema Repository**: https://github.com/ossf/gemara/tree/main/schemas\n\n")
+	result += fmt.Sprintf("- **Schema Version**: %s\n", v.SchemaVersion)
+	result += fmt.Sprintf("- **Schema URL**: https://github.com/ossf/gemara/blob/%s/schemas/layer-%d.cue\n", v.SchemaVersion, v.Layer)
+	result += fmt.Sprintf("- **Schema Repository**: https://github.com/ossf/gemara/tree/%s/schemas\n\n", v.SchemaVersion)
 
 	if !v.ValidationResult.Valid {
 		result += fmt.Sprintf("## Your YAML Content\n\n")

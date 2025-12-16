@@ -2,17 +2,15 @@ package mcp
 
 import (
 	"context"
-	_ "embed"
 	"fmt"
 	"log/slog"
 
-	"github.com/complytime/gemara-mcp-server/tools"
+	"github.com/complytime/gemara-mcp-server/tools/authoring"
+	"github.com/complytime/gemara-mcp-server/tools/info"
+	"github.com/complytime/gemara-mcp-server/tools/prompts"
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
 )
-
-//go:embed prompts/gemara-context.md
-var gemaraContext string
 
 type ServerConfig struct {
 	// Version of the server
@@ -52,19 +50,19 @@ func NewServer(cfg *ServerConfig) (*Server, error) {
 	s.mcpServer = mcpServer
 	slog.Debug("MCP server instance created")
 
-	// Register the Gemara context as a resource so it can be automatically discovered
-	gemaraContextResource := mcp.NewResource(
-		"gemara://context/about",
-		"Gemara Overview",
-		mcp.WithResourceDescription("Comprehensive overview and context about Gemara (GRC Engineering Model for Automated Risk Assessment)"),
-		mcp.WithMIMEType("text/markdown"),
-	)
-	s.mcpServer.AddResource(gemaraContextResource, s.handleGemaraContextResource)
-	slog.Debug("Gemara context resource registered")
+	// Register Gemara Info Tools (validation, schemas, resources)
+	slog.Debug("Initializing Gemara info tools")
+	infoTools, err := info.NewGemaraInfoTools()
+	if err != nil {
+		slog.Error("Failed to create info tools", "error", err)
+		return nil, err
+	}
+	infoTools.Register(mcpServer)
+	slog.Debug("Gemara info tools registered successfully")
 
 	// Register Gemara Authoring Tools
 	slog.Debug("Initializing Gemara authoring tools")
-	authoringTools, err := tools.NewGemaraAuthoringTools()
+	authoringTools, err := authoring.NewGemaraAuthoringTools()
 	if err != nil {
 		slog.Error("Failed to create authoring tools", "error", err)
 		return nil, err
@@ -112,7 +110,7 @@ func (s *Server) handleGemaraContextResource(_ context.Context, request mcp.Read
 		&mcp.TextResourceContents{
 			URI:      request.Params.URI,
 			MIMEType: "text/markdown",
-			Text:     gemaraContext,
+			Text:     prompts.GemaraContext,
 		},
 	}, nil
 }

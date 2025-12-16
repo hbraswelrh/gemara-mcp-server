@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-package tools
+package info
 
 import (
 	"testing"
@@ -61,7 +61,7 @@ purpose: "Test Purpose"
 // TestPerformCUEValidation_ValidLayer1 tests validation with valid Layer 1 YAML
 // Note: This test requires network access to fetch schemas from GitHub.
 func TestPerformCUEValidation(t *testing.T) {
-	g, err := NewGemaraAuthoringTools()
+	g, err := NewGemaraInfoTools()
 	require.NoError(t, err)
 	tests := []struct {
 		name        string

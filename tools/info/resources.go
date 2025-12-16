@@ -1,4 +1,4 @@
-package tools
+package info
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 )
 
 // handleBaseSchemaResource returns the base.cue schema content
-func (g *GemaraAuthoringTools) handleBaseSchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+func (g *GemaraInfoTools) handleBaseSchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
 	schemaContent, err := g.getCommonCUESchema("base.cue")
 	if err != nil {
 		return nil, fmt.Errorf("failed to load base schema: %w", err)
@@ -25,7 +25,7 @@ func (g *GemaraAuthoringTools) handleBaseSchemaResource(ctx context.Context, req
 }
 
 // handleMetadataSchemaResource returns the metadata.cue schema content
-func (g *GemaraAuthoringTools) handleMetadataSchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+func (g *GemaraInfoTools) handleMetadataSchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
 	schemaContent, err := g.getCommonCUESchema("metadata.cue")
 	if err != nil {
 		return nil, fmt.Errorf("failed to load metadata schema: %w", err)
@@ -40,7 +40,7 @@ func (g *GemaraAuthoringTools) handleMetadataSchemaResource(ctx context.Context,
 }
 
 // handleMappingSchemaResource returns the mapping.cue schema content
-func (g *GemaraAuthoringTools) handleMappingSchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+func (g *GemaraInfoTools) handleMappingSchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
 	schemaContent, err := g.getCommonCUESchema("mapping.cue")
 	if err != nil {
 		return nil, fmt.Errorf("failed to load mapping schema: %w", err)
@@ -55,7 +55,7 @@ func (g *GemaraAuthoringTools) handleMappingSchemaResource(ctx context.Context, 
 }
 
 // handleLayer1SchemaResource returns the layer-1.cue schema content
-func (g *GemaraAuthoringTools) handleLayer1SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+func (g *GemaraInfoTools) handleLayer1SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
 	schemaContent, err := g.getCUESchema(1)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load layer 1 schema: %w", err)
@@ -70,7 +70,7 @@ func (g *GemaraAuthoringTools) handleLayer1SchemaResource(ctx context.Context, r
 }
 
 // handleLayer2SchemaResource returns the layer-2.cue schema content
-func (g *GemaraAuthoringTools) handleLayer2SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+func (g *GemaraInfoTools) handleLayer2SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
 	schemaContent, err := g.getCUESchema(2)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load layer 2 schema: %w", err)
@@ -85,7 +85,7 @@ func (g *GemaraAuthoringTools) handleLayer2SchemaResource(ctx context.Context, r
 }
 
 // handleLayer3SchemaResource returns the layer-3.cue schema content
-func (g *GemaraAuthoringTools) handleLayer3SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+func (g *GemaraInfoTools) handleLayer3SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
 	schemaContent, err := g.getCUESchema(3)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load layer 3 schema: %w", err)
@@ -100,7 +100,7 @@ func (g *GemaraAuthoringTools) handleLayer3SchemaResource(ctx context.Context, r
 }
 
 // handleLayer4SchemaResource returns the layer-4.cue schema content
-func (g *GemaraAuthoringTools) handleLayer4SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+func (g *GemaraInfoTools) handleLayer4SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
 	schemaContent, err := g.getCUESchema(4)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load layer 4 schema: %w", err)
@@ -115,7 +115,7 @@ func (g *GemaraAuthoringTools) handleLayer4SchemaResource(ctx context.Context, r
 }
 
 // handleLayer5SchemaResource returns the layer-5.cue schema content
-func (g *GemaraAuthoringTools) handleLayer5SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+func (g *GemaraInfoTools) handleLayer5SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
 	schemaContent, err := g.getCUESchema(5)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load layer 5 schema: %w", err)
@@ -130,7 +130,7 @@ func (g *GemaraAuthoringTools) handleLayer5SchemaResource(ctx context.Context, r
 }
 
 // handleLayer6SchemaResource returns the layer-6.cue schema content
-func (g *GemaraAuthoringTools) handleLayer6SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+func (g *GemaraInfoTools) handleLayer6SchemaResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
 	schemaContent, err := g.getCUESchema(6)
 	if err != nil {
 		return nil, fmt.Errorf("failed to load layer 6 schema: %w", err)
@@ -146,7 +146,7 @@ func (g *GemaraAuthoringTools) handleLayer6SchemaResource(ctx context.Context, r
 
 // getSchemaResourceContent retrieves schema content via resource URI
 // This provides a consistent way for tools to access schemas through the resource system
-func (g *GemaraAuthoringTools) getSchemaResourceContent(uri string) (string, error) {
+func (g *GemaraInfoTools) getSchemaResourceContent(uri string) (string, error) {
 	// Find the resource handler for this URI
 	var handler func(context.Context, mcp.ReadResourceRequest) ([]mcp.ResourceContents, error)
 
@@ -198,24 +198,27 @@ func (g *GemaraAuthoringTools) getSchemaResourceContent(uri string) (string, err
 }
 
 // getLayerSchemaResourceURI returns the resource URI for a given layer
-func (g *GemaraAuthoringTools) getLayerSchemaResourceURI(layer int) string {
+func (g *GemaraInfoTools) getLayerSchemaResourceURI(layer int) string {
 	return fmt.Sprintf("gemara://schema/layer/%d", layer)
 }
 
 // getCommonSchemaResourceURI returns the resource URI for a common schema
-func (g *GemaraAuthoringTools) getCommonSchemaResourceURI(schemaName string) string {
+func (g *GemaraInfoTools) getCommonSchemaResourceURI(schemaName string) string {
 	return fmt.Sprintf("gemara://schema/common/%s", schemaName)
 }
 
 // getCUESchema fetches or returns cached CUE schema for a layer
-func (g *GemaraAuthoringTools) getCUESchema(layer int) (string, error) {
+func (g *GemaraInfoTools) getCUESchema(layer int) (string, error) {
+	// Create version-aware cache key
+	cacheKey := fmt.Sprintf("%s:layer:%d", g.schemaVersion, layer)
+	
 	// Check cache first
-	if schema, ok := g.schemaCache[layer]; ok {
+	if schema, ok := g.schemaCache[cacheKey]; ok {
 		return schema, nil
 	}
 
-	// Fetch schema from GitHub
-	schemaURL := fmt.Sprintf("https://raw.githubusercontent.com/ossf/gemara/main/schemas/layer-%d.cue", layer)
+	// Fetch schema from GitHub using the configured version
+	schemaURL := fmt.Sprintf("https://raw.githubusercontent.com/ossf/gemara/%s/schemas/layer-%d.cue", g.schemaVersion, layer)
 
 	resp, err := http.Get(schemaURL)
 	if err != nil {
@@ -234,31 +237,24 @@ func (g *GemaraAuthoringTools) getCUESchema(layer int) (string, error) {
 
 	schemaContent := string(schemaBytes)
 
-	// Cache the schema
-	g.schemaCache[layer] = schemaContent
+	// Cache the schema with version-aware key
+	g.schemaCache[cacheKey] = schemaContent
 
 	return schemaContent, nil
 }
 
 // getCommonCUESchema fetches or returns cached common CUE schema files
-func (g *GemaraAuthoringTools) getCommonCUESchema(schemaName string) (string, error) {
-	// Use a cache key that includes the schema name
-	cacheKey := -1000 // Use negative numbers for common schemas to avoid conflicts with layer numbers
-	if schemaName == "base.cue" {
-		cacheKey = -1
-	} else if schemaName == "metadata.cue" {
-		cacheKey = -2
-	} else if schemaName == "mapping.cue" {
-		cacheKey = -3
-	}
+func (g *GemaraInfoTools) getCommonCUESchema(schemaName string) (string, error) {
+	// Create version-aware cache key
+	cacheKey := fmt.Sprintf("%s:common:%s", g.schemaVersion, schemaName)
 
 	// Check cache first
 	if schema, ok := g.schemaCache[cacheKey]; ok {
 		return schema, nil
 	}
 
-	// Fetch schema from GitHub
-	schemaURL := fmt.Sprintf("https://raw.githubusercontent.com/ossf/gemara/main/schemas/%s", schemaName)
+	// Fetch schema from GitHub using the configured version
+	schemaURL := fmt.Sprintf("https://raw.githubusercontent.com/ossf/gemara/%s/schemas/%s", g.schemaVersion, schemaName)
 
 	resp, err := http.Get(schemaURL)
 	if err != nil {
@@ -281,4 +277,49 @@ func (g *GemaraAuthoringTools) getCommonCUESchema(schemaName string) (string, er
 	g.schemaCache[cacheKey] = schemaContent
 
 	return schemaContent, nil
+}
+
+// handleLexiconResource returns the Gemara lexicon content
+func (g *GemaraInfoTools) handleLexiconResource(ctx context.Context, request mcp.ReadResourceRequest) ([]mcp.ResourceContents, error) {
+	// Check cache first
+	cacheKey := "lexicon:gemara.openssf.org"
+	if lexicon, ok := g.schemaCache[cacheKey]; ok {
+		return []mcp.ResourceContents{
+			&mcp.TextResourceContents{
+				URI:      request.Params.URI,
+				MIMEType: "text/html",
+				Text:     lexicon,
+			},
+		}, nil
+	}
+
+	// Fetch lexicon from Gemara website
+	lexiconURL := "https://gemara.openssf.org/lexicon.html"
+	resp, err := http.Get(lexiconURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch lexicon from %s: %w", lexiconURL, err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to fetch lexicon: HTTP %d", resp.StatusCode)
+	}
+
+	lexiconBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read lexicon: %w", err)
+	}
+
+	lexiconContent := string(lexiconBytes)
+
+	// Cache the lexicon
+	g.schemaCache[cacheKey] = lexiconContent
+
+	return []mcp.ResourceContents{
+		&mcp.TextResourceContents{
+			URI:      request.Params.URI,
+			MIMEType: "text/html",
+			Text:     lexiconContent,
+		},
+	}, nil
 }
